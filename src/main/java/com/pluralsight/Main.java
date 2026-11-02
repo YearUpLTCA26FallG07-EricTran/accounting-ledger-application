@@ -31,17 +31,17 @@ public class Main {
                 L) Ledger
                 X) Exit
                 Pick an option:""";
-        String choice;
+        char choice;
         do{
-            choice = Console.promptForString(homeScreenText);
+            choice = Console.promptForChar(homeScreenText, "DMLX");
             switch (choice) {
-                case "D" -> addDeposit();
-                case "P" -> makePayment();
-                case "L" -> displayLedger();
+                case 'D' -> addDeposit();
+                case 'M' -> makePayment();
+                case 'L' -> displayLedger();
                 default -> System.out.println("Invalid Input, try again..");
 
             }
-        }while (!choice.equals("X"));
+        }while (choice != 'X');
 
 
     }
@@ -52,10 +52,17 @@ public class Main {
         LocalDate date = LocalDate.parse(dateInfo);
 
         //turns time info to LocalTime
-        String timeInfo = Console.promptForString("Enter time format (hh:mm:ss");
+        String timeInfo = Console.promptForString("Enter time format (hh:mm:ss): ");
         LocalTime time = LocalTime.parse(timeInfo);
 
         //Get description
+        String product = Console.promptForString("Enter product: ");
+
+        //vendor
+        String vendor = Console.promptForString("Enter vendor name: ");
+
+        //amount
+        double amount = Console.promptForDouble("Enter amount: ");
 
     }
 

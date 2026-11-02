@@ -24,6 +24,18 @@ public class Console {
         }
     }
 
+    public static double promptForDouble(String prompt){
+        while(true) {
+            System.out.print(prompt);
+
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid number.");
+            }
+        }
+    }
+
     public static String promptForString(String prompt){
         System.out.print(prompt);
         return scanner.nextLine();
