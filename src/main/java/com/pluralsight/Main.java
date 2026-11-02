@@ -1,5 +1,9 @@
 package com.pluralsight;
 
+import javax.swing.text.html.HTMLDocument;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -10,6 +14,13 @@ public class Main {
 
 
     public static void displayHomeScreen() {
+
+
+        //Created homescreen with String inputs
+        // D) Adds deposits
+        // P) makes payments (debit)
+        // L) ledger home screen
+        // X) exits the app
 
         String homeScreenText = """
                 
@@ -36,7 +47,15 @@ public class Main {
     }
 
     private static void addDeposit() {
+        //turn Date info into LocalDate
+        String dateInfo = Console.promptForString("Enter date format (yyyy-mm-dd): ");
+        LocalDate date = LocalDate.parse(dateInfo);
 
+        //turns time info to LocalTime
+        String timeInfo = Console.promptForString("Enter time format (hh:mm:ss");
+        LocalTime time = LocalTime.parse(timeInfo);
+
+        //Get description
 
     }
 

@@ -9,6 +9,20 @@ public class Console {
     private static final Scanner scanner = new Scanner(System.in);
 
 
+    public static char promptForChar(String prompt, String validOptions) {
+        while(true) {
+            System.out.print(prompt);
+            char character = 0;
+            String input = scanner.nextLine().trim().toUpperCase();
+            if (input.length() == 1 ){
+                character = input.charAt(0);
+            }
+
+            if (validOptions.indexOf(character) >= 0){
+                return character;
+            }
+        }
+    }
 
     public static String promptForString(String prompt){
         System.out.print(prompt);
