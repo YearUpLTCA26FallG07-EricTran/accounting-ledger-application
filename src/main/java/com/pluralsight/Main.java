@@ -59,9 +59,31 @@ public class Main {
         try {
             //reads the csv file
             BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"));
+
             //first line of the csv stored as a string
             String line = reader.readLine();
-            System.out.println(line);
+
+            //skips the header and reads line of data
+            line = reader.readLine();
+
+            //while there is still data in the csv read it but into seperate parts
+            while(line != null) {
+                //splits the csv line into the 5 pieces
+                String[] parts = line.split("\\|");
+
+                //converts each variable into the right data type
+                LocalDate date = LocalDate.parse(parts[0]);
+                LocalTime time = LocalTime.parse(parts[1]);
+                String description = parts[2];
+                String vendor = parts[3];
+                double amount = Double.parseDouble(parts[4]);
+
+                Transaction transaction = new Transaction(date, time, description, vendor, amount);
+                transactions.add(transaction);
+
+                line = reader.readLine();
+            }
+            reader.close();
         }catch (IOException e){
             //this runs if there is a problem with file
             System.out.println("+ You have No Balance");
@@ -81,9 +103,13 @@ public class Main {
 
         //amount
         double amount = Console.promptForDouble("Enter amount: ");
-        
+
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
+
+        //test
+        System.out.println("Deposit added successfully!");
+
 
     }
 
