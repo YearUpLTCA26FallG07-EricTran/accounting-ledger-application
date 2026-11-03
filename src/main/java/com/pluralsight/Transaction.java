@@ -7,16 +7,16 @@ public class Transaction {
 
     private LocalDate date;
     private LocalTime time;
-    private String product;
+    private String description;
     private String vendor;
     private double amount;
 
 
 
-    public Transaction(LocalDate date, LocalTime time, String product, String vendor, double amount) {
+    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
-        this.product = product;
+        this.description = description;
         this.vendor = vendor;
         this.amount = amount;
 
@@ -37,12 +37,12 @@ public class Transaction {
         this.time = time;
     }
 
-    public String getProduct() {
-        return product;
+    public String getdescription() {
+        return description;
     }
 
-    public void setProduct(String product) {
-        this.product = product;
+    public void setdescription(String description) {
+        this.description = description;
     }
 
     public String getVendor() {

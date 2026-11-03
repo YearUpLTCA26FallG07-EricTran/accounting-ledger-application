@@ -1,19 +1,29 @@
 package com.pluralsight;
 
 import javax.swing.text.html.HTMLDocument;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class Main {
 
+    static ArrayList<Transaction> transactions = new ArrayList<>();
+
     public static void main(String[] args) {
 
+        loadAccountInfo();
         displayHomeScreen();
+
+
 
     }
 
 
     public static void displayHomeScreen() {
+
 
 
         //Created homescreen with String inputs
@@ -26,43 +36,54 @@ public class Main {
                 
                 === HOME SCREEN ===
                 
-                D) Add Deposit 
+                D) Add Deposit
                 P) Make Payment(Debit)
                 L) Ledger
                 X) Exit
-                Pick an option:""";
+                Pick an option: """;
         char choice;
         do{
-            choice = Console.promptForChar(homeScreenText, "DMLX");
+            choice = Console.promptForChar(homeScreenText, "DPLX");
             switch (choice) {
                 case 'D' -> addDeposit();
-                case 'M' -> makePayment();
+                case 'P' -> makePayment();
                 case 'L' -> displayLedger();
-                default -> System.out.println("Invalid Input, try again..");
-
+                case 'X' -> {}
             }
         }while (choice != 'X');
 
 
     }
 
+    public static void loadAccountInfo() {
+        try {
+            //reads the csv file
+            BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"));
+            //first line of the csv stored as a string
+            String line = reader.readLine();
+            System.out.println(line);
+        }catch (IOException e){
+            //this runs if there is a problem with file
+            System.out.println("+ You have No Balance");
+        }
+    }
+
+
     private static void addDeposit() {
-        //turn Date info into LocalDate
-        String dateInfo = Console.promptForString("Enter date format (yyyy-mm-dd): ");
-        LocalDate date = LocalDate.parse(dateInfo);
 
-        //turns time info to LocalTime
-        String timeInfo = Console.promptForString("Enter time format (hh:mm:ss): ");
-        LocalTime time = LocalTime.parse(timeInfo);
-
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
         //Get description
-        String product = Console.promptForString("Enter product: ");
+        String description = Console.promptForString("Enter description: ");
 
         //vendor
         String vendor = Console.promptForString("Enter vendor name: ");
 
         //amount
         double amount = Console.promptForDouble("Enter amount: ");
+        
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
+        transactions.add(transaction);
 
     }
 
