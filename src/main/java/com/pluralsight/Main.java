@@ -3,6 +3,7 @@ package com.pluralsight;
 import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -102,7 +103,7 @@ public class Main {
         String vendor = Console.promptForString("Enter vendor name: ");
 
         //amount
-        double amount = Console.promptForDouble("Enter amount: ");
+        double amount = Math.abs(Console.promptForDouble("Enter amount: "));
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
@@ -114,6 +115,42 @@ public class Main {
     }
 
     private static void makePayment() {
+
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        //Get description
+        String description = Console.promptForString("Enter description: ");
+
+        //vendor
+        String vendor = Console.promptForString("Enter vendor name: ");
+
+        //amount
+        double amount = Math.abs(Console.promptForDouble("Enter amount: "));
+
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
+        transactions.add(transaction);
+
+        //test
+        System.out.println("Payment successful!");
+
+    }
+
+    private static void saveTransaction(Transaction transaction) throws IOException {
+        FileWriter writer = new FileWriter("transactions.csv", true);
+        transaction.getDate();
+        transaction.getTime();
+        transaction.getdescription();
+        transaction.getVendor();
+        transaction.getAmount();
+        String line = transaction.getDate() + "|"
+                +  transaction.getTime() + "|"
+                + transaction.getdescription() + "|"
+                + transaction.getVendor() + "|"
+                + transaction.getAmount();
+
+        
+
+
 
     }
 
