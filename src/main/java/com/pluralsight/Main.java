@@ -27,17 +27,13 @@ public class Main {
     public static void displayHomeScreen() throws IOException {
 
 
+//Created homescreen with String inputs
+        // D) Adds deposits
+        // P) makes payments (debit)
+        // L) ledger home screen
+        // X) exits the app
 
-
-        char choice;
-        do{
-            //Created homescreen with String inputs
-            // D) Adds deposits
-            // P) makes payments (debit)
-            // L) ledger home screen
-            // X) exits the app
-
-            String homeScreenText = """
+        String homeScreenText = """
                 
                 ================================
                           HOME SCREEN 
@@ -53,15 +49,21 @@ public class Main {
 
                 --------------------------------
                 Select an option: """;
-            displayBalance();
+        displayBalance();
 
+        char choice;
+        do{
 
             choice = Console.promptForChar(homeScreenText, "DPLX");
+
             switch (choice) {
                 case 'D' -> addDeposit();
                 case 'P' -> makePayment();
                 case 'L' -> displayLedger();
                 case 'X' -> System.out.println("Closing Program");
+
+                default -> System.out.println("Invalid Input");
+
             }
         }while (choice != 'X');
 
@@ -228,12 +230,16 @@ public class Main {
                 case 'P' -> paymentsLedgerMenu();
                 case 'R' -> reportsLedgerMenu();
                 case 'H' -> {}
+
+                default -> System.out.println("Invalid Input");
+
             }
         } while(choice != 'H');
 
 
     }
-
+        //todo when displaying all entries clean it up and label, display time as 24 hr clock
+        //todo column header
     private static void displayAllEntriesLedgerMenu () {
         //for loops checks csv file and displays it in reverse and displays ti
         for (int i = transactions.size() - 1; i >= 0; i--) {
@@ -311,13 +317,29 @@ public class Main {
                 case 3 -> yearToDate();
                 case 4 -> previousYear();
                 case 5 -> searchByVendor();
-                case 6 -> {}
+                case 0 -> {}
+
+                default -> {
+                    if (choice != 0) {
+                        System.out.println("Invalid Input. Enter A Valid Number.");
+                    }
+                }
             }
+
         } while(choice != 0);
     }
 
     private static void monthToDate() {
+        //new object for today
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
 
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            LocalDate date = transaction.getDate();
+
+
+        }
     }
 
     private static void previousMonth() {
