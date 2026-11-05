@@ -338,17 +338,59 @@ public class Main {
             Transaction transaction = transactions.get(i);
             LocalDate date = transaction.getDate();
 
+            if (date.isAfter(startOfMonth) || date.equals(startOfMonth)) {
+                System.out.println(transaction.getDate() + "|"
+                        +  transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+            }
+
 
         }
     }
 
     private static void previousMonth() {
+        LocalDate today = LocalDate.now();
+        LocalDate previousMonth = today.minusMonths(1);
+        LocalDate startOfPreviousMonth = previousMonth.withDayOfMonth(1);
+        LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
 
+
+
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            LocalDate date = transaction.getDate();
+
+            if (!date.isBefore(startOfPreviousMonth) && date.isBefore(startOfCurrentMonth)) {
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+
+
+            }
+        }
     }
 
-
     private static void yearToDate() {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfYear = today.withDayOfYear(1);
 
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            LocalDate date = transaction.getDate();
+
+            if (!date.isBefore(startOfYear)) {
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+
+            }
+        }
     }
 
 
