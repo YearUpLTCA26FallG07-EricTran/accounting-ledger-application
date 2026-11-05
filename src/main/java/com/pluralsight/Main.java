@@ -207,40 +207,128 @@ public class Main {
                 P) Payments
                 R) Reports
                 
-                X) Return to Main Menu
-                """;
+                H) Return to Main Menu
+                
+                --------------------------------
+                Select an option:  """;
 
         char choice;
         do{
-            choice = Console.promptForChar(ledgerMenuScreen, "ADPRX");
+            choice = Console.promptForChar(ledgerMenuScreen, "ADPRH");
             switch (choice) {
                 case 'A' -> displayAllEntriesLedgerMenu();
                 case 'D' -> depositsLedgerMenu();
                 case 'P' -> paymentsLedgerMenu();
                 case 'R' -> reportsLedgerMenu();
-                case 'X' -> {}
+                case 'H' -> {}
             }
-        } while(choice != 'X');
-
-
+        } while(choice != 'H');
 
 
     }
 
     private static void displayAllEntriesLedgerMenu () {
+        //for loops checks csv file and displays it in reverse and displays ti
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+
+            transaction.getDate();
+            transaction.getTime();
+            transaction.getdescription();
+            transaction.getVendor();
+            transaction.getAmount();
+
+            System.out.println(transaction.getDate() + "|"
+                    +  transaction.getTime() + "|"
+                    + transaction.getdescription() + "|"
+                    + transaction.getVendor() + "|"
+                    + transaction.getAmount());
+
+        }
 
     }
 
-    private static void depositsLedgerMenu () {
+    private static void depositsLedgerMenu () throws IOException {
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
 
-    }
+            if (transaction.getAmount() > 0) {
+
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+            }
+
+
+            }
+
+        }
 
     private static void paymentsLedgerMenu() {
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
 
+            if (transaction.getAmount() < 0) {
+
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+            }
+        }
     }
 
     private static void reportsLedgerMenu() {
 
+        String ledgerMenuScreen = """
+                === Reports ===
+                
+                1) Month To Date
+                2) Previous Month
+                3) Year To Date
+                4) Previous Year
+                5) Search by Vendor 
+                0) Back 
+                
+                --------------------------------
+                Select an option:  """;
+        int choice;
+        do{
+            choice = Console.promptForInt(ledgerMenuScreen);
+            switch (choice) {
+                case 1 -> monthToDate();
+                case 2 -> previousMonth();
+                case 3 -> yearToDate();
+                case 4 -> previousYear();
+                case 5 -> searchByVendor();
+                case 6 -> {}
+            }
+        } while(choice != 0);
     }
 
+    private static void monthToDate() {
+
+    }
+
+    private static void previousMonth() {
+
+    }
+
+
+    private static void yearToDate() {
+
+    }
+
+
+    private static void previousYear() {
+
+    }
+
+
+    private static void searchByVendor() {
+
+    }
 }
