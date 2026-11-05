@@ -28,19 +28,22 @@ public class Main {
 
 
 
-        //Created homescreen with String inputs
-        // D) Adds deposits
-        // P) makes payments (debit)
-        // L) ledger home screen
-        // X) exits the app
 
-        String homeScreenText = """
+        char choice;
+        do{
+            //Created homescreen with String inputs
+            // D) Adds deposits
+            // P) makes payments (debit)
+            // L) ledger home screen
+            // X) exits the app
+
+            String homeScreenText = """
                 
                 ================================
                           HOME SCREEN 
                 ================================
                 
-                """ + String.format("Current Balance: $%.2f%n", getBalance())+"""
+                """ + String.format("Current Balance: $%.2f%n", getBalance()) + """
                 
                 D) Add Deposit
                 P) Make Payment(Debit)
@@ -50,10 +53,9 @@ public class Main {
 
                 --------------------------------
                 Select an option: """;
-        displayBalance();
+            displayBalance();
 
-        char choice;
-        do{
+
             choice = Console.promptForChar(homeScreenText, "DPLX");
             switch (choice) {
                 case 'D' -> addDeposit();
@@ -148,7 +150,7 @@ public class Main {
 
 
 
-    private static void makePayment() {
+    private static void makePayment() throws IOException {
 
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
@@ -159,7 +161,7 @@ public class Main {
         String vendor = Console.promptForString("Enter vendor name: ");
 
         //amount
-        double amount = Math.abs(Console.promptForDouble("Enter amount: "));
+        double amount = -Math.abs(Console.promptForDouble("Enter amount: "));
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
@@ -167,8 +169,8 @@ public class Main {
         //test
         System.out.println("Payment successful!");
 
-        //todo save info
-
+        //saves transaction to the csv file
+        saveTransaction(transaction);
     }
 
     private static void saveTransaction(Transaction transaction) throws IOException {
@@ -183,6 +185,11 @@ public class Main {
                 + transaction.getdescription() + "|"
                 + transaction.getVendor() + "|"
                 + transaction.getAmount();
+
+        //writes the string into the CSV
+        writer.write(line + "\n");
+        //closes the writer
+        writer.close();
 
         
 
