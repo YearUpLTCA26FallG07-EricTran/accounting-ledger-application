@@ -1,5 +1,7 @@
 package com.pluralsight;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -223,38 +225,64 @@ public class Main {
 
         //todo when displaying all entries clean it up and label, display time as modern time
         //todo column header
-        System.out.println("\n ================== TRANSACTIONS  ==================");
-        //header for data
+        System.out.println("=====================================================================================");
+        System.out.println("                                  TRANSACTIONS                                       ");
+        System.out.println("=====================================================================================");
+
+        System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
+                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+
+        System.out.println("------------------------------------------------------------------------------------");
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
+            String formattedTime = transaction.getTime()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
 
-            System.out.println(transaction.getDate() + "|"
-                    + transaction.getTime() + "|"
-                    + transaction.getdescription() + "|"
-                    + transaction.getVendor() + "|"
-                    + transaction.getAmount());
-
+            System.out.printf("%-12s %-10s %-25s %-20s $%10.2f%n",
+                    transaction.getDate(),
+                    formattedTime,
+                    transaction.getdescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
         }
+        System.out.println("------------------------------------------------------------------------------------");
 
     }
 
     private static void depositsLedgerMenu() {
+
+        System.out.println("=====================================================================================");
+        System.out.println("                                     DEPOSIT                                         ");
+        System.out.println("=====================================================================================");
+
+        System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
+                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+
+        System.out.println("------------------------------------------------------------------------------------");
+
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
             if (transaction.getAmount() > 0) {
 
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
+                String formattedTime = transaction.getTime()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
+
+                System.out.printf("%-12s %-10s %-25s %-20s $%10.2f%n",
+                        transaction.getDate(),
+                        formattedTime,
+                        transaction.getdescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
             }
-
-
         }
+        System.out.println("------------------------------------------------------------------------------------");
+
+
+
+
 
     }
 
