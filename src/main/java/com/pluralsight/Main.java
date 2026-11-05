@@ -14,46 +14,38 @@ public class Main {
 
     static ArrayList<Transaction> transactions = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         loadAccountInfo();
         displayHomeScreen();
 
-
-
     }
 
-
-    public static void displayHomeScreen() throws IOException {
-
-
-//Created homescreen with String inputs
-        // D) Adds deposits
-        // P) makes payments (debit)
-        // L) ledger home screen
-        // X) exits the app
-
-        String homeScreenText = """
-                
-                ================================
-                          HOME SCREEN 
-                ================================
-                
-                """ + String.format("Current Balance: $%.2f%n", getBalance()) + """
-                
-                D) Add Deposit
-                P) Make Payment(Debit)
-                L) Ledger
-                X) Exit
-                
-
-                --------------------------------
-                Select an option: """;
-        displayBalance();
-
+    public static void displayHomeScreen() {
         char choice;
-        do{
+        do {
 
+            //Created homescreen with String inputs
+            // D) Adds deposits
+            // P) makes payments (debit)
+            // L) ledger home screen
+            // X) exits the app
+            String homeScreenText = """
+                    
+                    ================================
+                              HOME SCREEN 
+                    ================================
+                    
+                    """ + String.format("Current Balance: $%.2f%n", getBalance()) + """
+                    
+                    D) Add Deposit
+                    P) Make Payment(Debit)
+                    L) Ledger
+                    X) Exit
+                    
+                    
+                    --------------------------------
+                    Select an option: """;
             choice = Console.promptForChar(homeScreenText, "DPLX");
 
             switch (choice) {
@@ -65,8 +57,7 @@ public class Main {
                 default -> System.out.println("Invalid Input");
 
             }
-        }while (choice != 'X');
-
+        } while (choice != 'X');
 
     }
 
@@ -82,7 +73,7 @@ public class Main {
             line = reader.readLine();
 
             //while there is still data in the csv read it but into separate parts
-            while(line != null) {
+            while (line != null) {
                 //splits the csv line into the 5 pieces
                 String[] parts = line.split("\\|");
 
@@ -102,7 +93,7 @@ public class Main {
             }
             //closes when finished reading csv file
             reader.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             //this runs if there is a problem with file
             System.out.println("You have No Balance");
         }
@@ -111,7 +102,7 @@ public class Main {
     public static double getBalance() {
         double balance = 0;
 
-        for(Transaction transaction : transactions) {
+        for (Transaction transaction : transactions) {
             balance += transaction.getAmount();
 
         }
@@ -119,13 +110,13 @@ public class Main {
 
     }
 
-    public static void displayBalance () {
+    public static void displayBalance() {
         double balance = getBalance();
         System.out.printf("Current Balance: $%.2f%n", balance);
     }
 
 
-    public static void addDeposit() throws IOException {
+    public static void addDeposit() {
 
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
@@ -142,64 +133,51 @@ public class Main {
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
 
-        //test
+
+        saveTransaction(transaction);
         System.out.println("Deposit added successfully!");
 
-        //save deposit
-        saveTransaction(transaction);
 
     }
 
 
-
-    private static void makePayment() throws IOException {
+    private static void makePayment() {
 
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
         //Get description
         String description = Console.promptForString("Enter description: ");
-
         //vendor
         String vendor = Console.promptForString("Enter vendor name: ");
-
         //amount
         double amount = -Math.abs(Console.promptForDouble("Enter amount: "));
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
-
-        //test
-        System.out.println("Payment successful!");
-
-        //saves transaction to the csv file
         saveTransaction(transaction);
+
+
     }
 
-    private static void saveTransaction(Transaction transaction) throws IOException {
-        FileWriter writer = new FileWriter("transactions.csv", true);
-        transaction.getDate();
-        transaction.getTime();
-        transaction.getdescription();
-        transaction.getVendor();
-        transaction.getAmount();
+
+    private static void saveTransaction(Transaction transaction) {
         String line = transaction.getDate() + "|"
-                +  transaction.getTime() + "|"
+                + transaction.getTime() + "|"
                 + transaction.getdescription() + "|"
                 + transaction.getVendor() + "|"
                 + transaction.getAmount();
 
-        //writes the string into the CSV
-        writer.write(line + "\n");
-        //closes the writer
-        writer.close();
-
-        
-
+        try (FileWriter writer = new FileWriter("transactions.csv", true)) {
+            //writes the string into the CSV
+            writer.write(line + "\n");
+        } catch (Exception e) {
+            System.out.println("Error saving transaction");
+        }
 
 
     }
 
-    private static void displayLedger() throws IOException {
+    private static void displayLedger() {
         //Create Ledger Menu
         //All entries should show the newest entries first
         //A) All - Display all entries
@@ -222,37 +200,38 @@ public class Main {
                 Select an option:  """;
 
         char choice;
-        do{
+        do {
             choice = Console.promptForChar(ledgerMenuScreen, "ADPRH");
             switch (choice) {
                 case 'A' -> displayAllEntriesLedgerMenu();
                 case 'D' -> depositsLedgerMenu();
                 case 'P' -> paymentsLedgerMenu();
                 case 'R' -> reportsLedgerMenu();
-                case 'H' -> {}
+                case 'H' -> {
+                }
 
                 default -> System.out.println("Invalid Input");
 
             }
-        } while(choice != 'H');
+        } while (choice != 'H');
 
 
     }
-        //todo when displaying all entries clean it up and label, display time as 24 hr clock
+
+    private static void displayAllEntriesLedgerMenu() {
+        //for loops checks csv file and displays it in reverse and displays
+
+        //todo when displaying all entries clean it up and label, display time as modern time
         //todo column header
-    private static void displayAllEntriesLedgerMenu () {
-        //for loops checks csv file and displays it in reverse and displays ti
+        System.out.println("\n ================== TRANSACTIONS  ==================");
+        //header for data
+
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
-            transaction.getDate();
-            transaction.getTime();
-            transaction.getdescription();
-            transaction.getVendor();
-            transaction.getAmount();
 
             System.out.println(transaction.getDate() + "|"
-                    +  transaction.getTime() + "|"
+                    + transaction.getTime() + "|"
                     + transaction.getdescription() + "|"
                     + transaction.getVendor() + "|"
                     + transaction.getAmount());
@@ -261,7 +240,7 @@ public class Main {
 
     }
 
-    private static void depositsLedgerMenu () throws IOException {
+    private static void depositsLedgerMenu() {
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
@@ -275,9 +254,9 @@ public class Main {
             }
 
 
-            }
-
         }
+
+    }
 
     private static void paymentsLedgerMenu() {
         for (int i = transactions.size() - 1; i >= 0; i--) {
@@ -309,7 +288,7 @@ public class Main {
                 --------------------------------
                 Select an option:  """;
         int choice;
-        do{
+        do {
             choice = Console.promptForInt(ledgerMenuScreen);
             switch (choice) {
                 case 1 -> monthToDate();
@@ -317,7 +296,8 @@ public class Main {
                 case 3 -> yearToDate();
                 case 4 -> previousYear();
                 case 5 -> searchByVendor();
-                case 0 -> {}
+                case 0 -> {
+                }
 
                 default -> {
                     if (choice != 0) {
@@ -326,7 +306,7 @@ public class Main {
                 }
             }
 
-        } while(choice != 0);
+        } while (choice != 0);
     }
 
     private static void monthToDate() {
@@ -340,7 +320,7 @@ public class Main {
 
             if (date.isAfter(startOfMonth) || date.equals(startOfMonth)) {
                 System.out.println(transaction.getDate() + "|"
-                        +  transaction.getTime() + "|"
+                        + transaction.getTime() + "|"
                         + transaction.getdescription() + "|"
                         + transaction.getVendor() + "|"
                         + transaction.getAmount());
@@ -355,7 +335,6 @@ public class Main {
         LocalDate previousMonth = today.minusMonths(1);
         LocalDate startOfPreviousMonth = previousMonth.withDayOfMonth(1);
         LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
-
 
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
@@ -395,11 +374,41 @@ public class Main {
 
 
     private static void previousYear() {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
+        LocalDate startOfCurrentYear = today.withDayOfYear(1);
 
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            LocalDate date = transaction.getDate();
+
+            if (!date.isBefore(startOfPreviousYear) && date.isBefore(startOfCurrentYear)) {
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+
+            }
+        }
     }
 
 
     private static void searchByVendor() {
+        String searchVendorName = Console.promptForString("Enter Vendor Name: ");
 
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            LocalDate date = transaction.getDate();
+
+            if (transaction.getVendor().equalsIgnoreCase(searchVendorName)) {
+                System.out.println(transaction.getDate() + "|"
+                        + transaction.getTime() + "|"
+                        + transaction.getdescription() + "|"
+                        + transaction.getVendor() + "|"
+                        + transaction.getAmount());
+            }
+
+        }
     }
 }
