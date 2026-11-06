@@ -55,9 +55,6 @@ public class Main {
                 case 'P' -> makePayment();
                 case 'L' -> displayLedger();
                 case 'X' -> System.out.println("Closing Program");
-
-                default -> System.out.println("Invalid Input");
-
             }
         } while (choice != 'X');
 
@@ -70,7 +67,6 @@ public class Main {
 
             //first line of the csv stored as a string
             String line = reader.readLine();
-
             //skips the header and reads line of data
             line = reader.readLine();
 
@@ -134,8 +130,6 @@ public class Main {
         //new Transaction object using data read from csv file
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
-
-
         saveTransaction(transaction);
         System.out.println("Deposit added successfully!");
 
@@ -209,11 +203,7 @@ public class Main {
                 case 'D' -> depositsLedgerMenu();
                 case 'P' -> paymentsLedgerMenu();
                 case 'R' -> reportsLedgerMenu();
-                case 'H' -> {
-                }
-
-                default -> System.out.println("Invalid Input");
-
+                case 'H' -> {}
             }
         } while (choice != 'H');
 
@@ -239,7 +229,7 @@ public class Main {
             String formattedTime = transaction.getTime()
                     .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
 
-            System.out.printf("%-12s %-10s %-25s %-20s $%10.2f%n",
+            System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
                     transaction.getDate(),
                     formattedTime,
                     transaction.getdescription(),
@@ -268,7 +258,7 @@ public class Main {
                 String formattedTime = transaction.getTime()
                         .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
 
-                System.out.printf("%-12s %-10s %-25s %-20s $%10.2f%n",
+                System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
                         transaction.getDate(),
                         formattedTime,
                         transaction.getdescription(),
@@ -436,7 +426,4 @@ public class Main {
 
         }
     }
-
-
-
 }
