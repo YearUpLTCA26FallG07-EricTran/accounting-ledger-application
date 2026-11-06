@@ -17,7 +17,6 @@ public class Main {
 
         loadAccountInfo();
         displayHomeScreen();
-
     }
 
     public static void displayHomeScreen() {
