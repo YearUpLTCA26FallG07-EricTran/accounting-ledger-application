@@ -1,16 +1,13 @@
 package com.pluralsight;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
-import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class Main {
 
@@ -102,7 +99,6 @@ public class Main {
 
         for (Transaction transaction : transactions) {
             balance += transaction.getAmount();
-
         }
         return balance;
 
@@ -203,7 +199,8 @@ public class Main {
                 case 'D' -> depositsLedgerMenu();
                 case 'P' -> paymentsLedgerMenu();
                 case 'R' -> reportsLedgerMenu();
-                case 'H' -> {}
+                case 'H' -> {
+                }
             }
         } while (choice != 'H');
 
@@ -211,81 +208,37 @@ public class Main {
     }
 
     private static void displayAllEntriesLedgerMenu() {
-        //for loops checks csv file and displays it in reverse and displays
-
-
-        System.out.println("=====================================================================================");
-        System.out.println("                                  TRANSACTIONS                                       ");
-        System.out.println("=====================================================================================");
-
-        System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
-                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
-
-        System.out.println("------------------------------------------------------------------------------------");
-
-        for (int i = transactions.size() - 1; i >= 0; i--) {
-            Transaction transaction = transactions.get(i);
-
-            String formattedTime = transaction.getTime()
-                    .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
-
-            System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
-                    transaction.getDate(),
-                    formattedTime,
-                    transaction.getdescription(),
-                    transaction.getVendor(),
-                    transaction.getAmount());
-        }
-
+        displayTransactions(transactions, "ALL TRANSACTIONS");
     }
 
     private static void depositsLedgerMenu() {
 
-        System.out.println("=====================================================================================");
-        System.out.println("                                     DEPOSIT                                         ");
-        System.out.println("=====================================================================================");
-
-        System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
-                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
-
-        System.out.println("------------------------------------------------------------------------------------");
+        ArrayList<Transaction> deposits = new ArrayList<>();
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
             if (transaction.getAmount() > 0) {
-
-                String formattedTime = transaction.getTime()
-                        .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
-
-                System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
-                        transaction.getDate(),
-                        formattedTime,
-                        transaction.getdescription(),
-                        transaction.getVendor(),
-                        transaction.getAmount());
+                deposits.add(transaction);
             }
         }
-
-
-
-
+        displayTransactions(deposits, "DEPOSITS");
 
     }
 
     private static void paymentsLedgerMenu() {
+
+        ArrayList<Transaction> payments = new ArrayList<>();
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
             if (transaction.getAmount() < 0) {
+                payments.add(transaction);
 
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
             }
         }
+        displayTransactions(payments, "PAYMENTS");
+
     }
 
     private static void reportsLedgerMenu() {
@@ -328,21 +281,18 @@ public class Main {
         //new object for today
         LocalDate today = LocalDate.now();
         LocalDate startOfMonth = today.withDayOfMonth(1);
+        ArrayList<Transaction> monthTransactions = new ArrayList<>();
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
             LocalDate date = transaction.getDate();
 
             if (date.isAfter(startOfMonth) || date.equals(startOfMonth)) {
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
+                monthTransactions.add(transaction);
             }
-
-
         }
+        displayTransactions(monthTransactions, "THIS MONTH");
+
     }
 
     private static void previousMonth() {
@@ -350,6 +300,7 @@ public class Main {
         LocalDate previousMonth = today.minusMonths(1);
         LocalDate startOfPreviousMonth = previousMonth.withDayOfMonth(1);
         LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
+        ArrayList<Transaction> previousMonthTransaction = new ArrayList<>();
 
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
@@ -357,73 +308,85 @@ public class Main {
             LocalDate date = transaction.getDate();
 
             if (!date.isBefore(startOfPreviousMonth) && date.isBefore(startOfCurrentMonth)) {
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
-
-
+                previousMonthTransaction.add(transaction);
             }
         }
+        displayTransactions(previousMonthTransaction, "PREVIOUS MONTH");
     }
 
     private static void yearToDate() {
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.withDayOfYear(1);
-
+        ArrayList<Transaction> yearToDateTransaction = new ArrayList<>();
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
             LocalDate date = transaction.getDate();
 
             if (!date.isBefore(startOfYear)) {
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
+                yearToDateTransaction.add(transaction);
 
             }
         }
+        displayTransactions(yearToDateTransaction, "YEAR TO DATE");
     }
-
 
     private static void previousYear() {
         LocalDate today = LocalDate.now();
         LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
         LocalDate startOfCurrentYear = today.withDayOfYear(1);
+        ArrayList<Transaction> previousYearTransaction = new ArrayList<>();
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
             LocalDate date = transaction.getDate();
 
             if (!date.isBefore(startOfPreviousYear) && date.isBefore(startOfCurrentYear)) {
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
+                previousYearTransaction.add(transaction);
 
             }
         }
+        displayTransactions(previousYearTransaction, "PREVIOUS YEAR");
     }
 
 
     private static void searchByVendor() {
         String searchVendorName = Console.promptForString("Enter Vendor Name: ");
-
+        ArrayList<Transaction> vendorTransaction = new ArrayList<>();
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
             LocalDate date = transaction.getDate();
 
             if (transaction.getVendor().equalsIgnoreCase(searchVendorName)) {
-                System.out.println(transaction.getDate() + "|"
-                        + transaction.getTime() + "|"
-                        + transaction.getdescription() + "|"
-                        + transaction.getVendor() + "|"
-                        + transaction.getAmount());
+                vendorTransaction.add(transaction);
             }
 
         }
+        displayTransactions(vendorTransaction, "VENDOR");
     }
+
+    private static void displayTransactions(
+            ArrayList<Transaction> transactions, String title) {
+        System.out.println("=====================================================================================");
+        System.out.printf("%45s", title);
+        System.out.println("\n=====================================================================================");
+
+        System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
+                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+
+            String formattedTime = transaction.getTime()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
+
+            System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
+                    transaction.getDate(),
+                    formattedTime,
+                    transaction.getdescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
+        }
+    }
+
+
+
 }
