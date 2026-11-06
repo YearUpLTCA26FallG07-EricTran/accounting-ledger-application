@@ -223,8 +223,7 @@ public class Main {
     private static void displayAllEntriesLedgerMenu() {
         //for loops checks csv file and displays it in reverse and displays
 
-        //todo when displaying all entries clean it up and label, display time as modern time
-        //todo column header
+
         System.out.println("=====================================================================================");
         System.out.println("                                  TRANSACTIONS                                       ");
         System.out.println("=====================================================================================");
@@ -247,7 +246,6 @@ public class Main {
                     transaction.getVendor(),
                     transaction.getAmount());
         }
-        System.out.println("------------------------------------------------------------------------------------");
 
     }
 
@@ -278,7 +276,6 @@ public class Main {
                         transaction.getAmount());
             }
         }
-        System.out.println("------------------------------------------------------------------------------------");
 
 
 
@@ -439,4 +436,7 @@ public class Main {
 
         }
     }
+
+
+
 }
