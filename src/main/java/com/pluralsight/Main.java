@@ -59,17 +59,17 @@ public class Main {
 
     public static void loadAccountInfo() {
         try {
-            //reads the csv file
+            //reads the csv so any new saved transactions can be read
             BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"));
 
-            //first line of the csv stored as a string
+
             String line = reader.readLine();
-            //skips the header and reads line of data
+            //skips the header in order to read the transaction data
             line = reader.readLine();
 
-            //while there is still data in the csv read it but into separate parts
+            //reads transaction.csv until there are no more records
             while (line != null) {
-                //splits the csv line into the 5 pieces
+                //splits the csv line into the different fields
                 String[] parts = line.split("\\|");
 
                 //converts each variable into the right data type
@@ -81,6 +81,7 @@ public class Main {
 
                 //new Transaction object using data read from csv file
                 Transaction transaction = new Transaction(date, time, description, vendor, amount);
+                //stores the transaction  into the arraylistto use throughout the program
                 transactions.add(transaction);
 
                 //reads the next line of csv file
@@ -89,24 +90,20 @@ public class Main {
             //closes when finished reading csv file
             reader.close();
         } catch (IOException e) {
-            //this runs if there is a problem with file
+            //this runs if there is a problem with file || handles in case CSV file can't be accessed
             System.out.println("You have No Balance");
         }
     }
 
     public static double getBalance() {
         double balance = 0;
-
+        //Loops through each transaction and adds it to balance
+        //Deposits are both positive/negative
         for (Transaction transaction : transactions) {
             balance += transaction.getAmount();
         }
         return balance;
 
-    }
-
-    public static void displayBalance() {
-        double balance = getBalance();
-        System.out.printf("Current Balance: $%.2f%n", balance);
     }
 
 
@@ -116,11 +113,10 @@ public class Main {
         LocalTime time = LocalTime.now();
         //Get description
         String description = Console.promptForString("Enter description: ");
-
         //vendor
         String vendor = Console.promptForString("Enter vendor name: ");
 
-        //amount
+        //ensures amount entered is positive
         double amount = Math.abs(Console.promptForDouble("Enter amount: "));
 
         //new Transaction object using data read from csv file
@@ -137,11 +133,10 @@ public class Main {
 
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
-        //Get description
+
         String description = Console.promptForString("Enter description: ");
-        //vendor
         String vendor = Console.promptForString("Enter vendor name: ");
-        //amount
+        //ensures amount entered is - because of payment
         double amount = -Math.abs(Console.promptForDouble("Enter amount: "));
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
@@ -208,20 +203,24 @@ public class Main {
     }
 
     private static void displayAllEntriesLedgerMenu() {
+        //Passes the transaction list into a reusable display method
         displayTransactions(transactions, "ALL TRANSACTIONS");
     }
 
     private static void depositsLedgerMenu() {
-
+        //Creates a separate list to store only deposits
         ArrayList<Transaction> deposits = new ArrayList<>();
 
+        //loops through the original transaction list
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
-
+            //checks if the transaction amount is positive
             if (transaction.getAmount() > 0) {
+                //saves the deposits that pass through the if statement
                 deposits.add(transaction);
             }
         }
+        //Sends the filtered list to the reusable display method
         displayTransactions(deposits, "DEPOSITS");
 
     }
@@ -278,9 +277,10 @@ public class Main {
     }
 
     private static void monthToDate() {
-        //new object for today
+        //Get today's date and checks for the first day of current month
         LocalDate today = LocalDate.now();
         LocalDate startOfMonth = today.withDayOfMonth(1);
+        //Create new list to store the transaction of current month
         ArrayList<Transaction> monthTransactions = new ArrayList<>();
 
         for (int i = transactions.size() - 1; i >= 0; i--) {
@@ -296,10 +296,12 @@ public class Main {
     }
 
     private static void previousMonth() {
+        //This determines the range for the previous month
         LocalDate today = LocalDate.now();
         LocalDate previousMonth = today.minusMonths(1);
         LocalDate startOfPreviousMonth = previousMonth.withDayOfMonth(1);
         LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
+        //New list to store transaction of previous month
         ArrayList<Transaction> previousMonthTransaction = new ArrayList<>();
 
 
@@ -315,6 +317,7 @@ public class Main {
     }
 
     private static void yearToDate() {
+        // Determines the first day of the current year
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.withDayOfYear(1);
         ArrayList<Transaction> yearToDateTransaction = new ArrayList<>();
@@ -331,6 +334,8 @@ public class Main {
     }
 
     private static void previousYear() {
+        //Determines the beginning of the previous year and current year
+        //Dates establish the range of previous year reports
         LocalDate today = LocalDate.now();
         LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
         LocalDate startOfCurrentYear = today.withDayOfYear(1);
@@ -350,7 +355,9 @@ public class Main {
 
 
     private static void searchByVendor() {
+        //Prompts the user to enter Vendor they're searching for
         String searchVendorName = Console.promptForString("Enter Vendor Name: ");
+        //List to store the Vendor Name that was searched
         ArrayList<Transaction> vendorTransaction = new ArrayList<>();
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
@@ -366,18 +373,23 @@ public class Main {
 
     private static void displayTransactions(
             ArrayList<Transaction> transactions, String title) {
+        //Display the title and headers for the table
         System.out.println("=====================================================================================");
         System.out.printf("%45s", title);
         System.out.println("\n=====================================================================================");
 
+        //Formats the headings and columns using spacing
         System.out.printf("%-12s %-10s %-25s %-20s %10s%n",
                 "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+        //Loops through the list backwards in order to get newest transactions first
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
 
+            //Converts the time into a 12-hour format
             String formattedTime = transaction.getTime()
                     .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
 
+            //Displays the data using aligned columns and amount by two decimal points
             System.out.printf("%-12s %-10s %-25s %-20s %10.2f%n",
                     transaction.getDate(),
                     formattedTime,
@@ -386,7 +398,5 @@ public class Main {
                     transaction.getAmount());
         }
     }
-
-
 
 }
