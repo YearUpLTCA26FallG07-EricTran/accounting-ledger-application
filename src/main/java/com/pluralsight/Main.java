@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -109,7 +110,7 @@ public class Main {
     public static void addDeposit() {
 
         LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
+        LocalTime time = LocalTime.now().parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         //Get description
         String description = Console.promptForString("Enter description: ");
         //vendor
@@ -131,8 +132,7 @@ public class Main {
     private static void makePayment() {
 
         LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-
+        LocalTime time = LocalTime.now().parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         String description = Console.promptForString("Enter description: ");
         String vendor = Console.promptForString("Enter vendor name: ");
         //ensures amount entered is - because of payment
